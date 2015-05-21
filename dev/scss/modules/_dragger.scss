@@ -1,0 +1,93 @@
+main {
+   position: relative;
+   width: 90%;
+   max-width: 1200px;
+   margin: 3em auto;
+}
+
+#cell-wrapper {
+  background: #fff; 
+  display: flex;
+  justify-content: flex-start;
+  flex-flow: row nowrap;
+  border: 1px solid $border-color; 
+  min-height: 30em;
+}
+
+.cell {
+  align-items: center;
+  display: flex;
+  flex: 0 1 auto;
+  width: 200px;
+  position: relative;
+  // padding: 1em;
+}
+
+h4 {
+  margin: auto;
+}
+
+.inner {
+  margin: 1em 15px;
+  width: 100%;
+}
+
+.dragger {
+  position: absolute;
+  right: 0;
+  background: #0156E2;
+  height: 100%;
+  width: 6px;
+  transform: translateX(3px);
+  z-index: 99;
+}
+
+.handle {
+  cursor: move;
+  position: absolute;
+  transform: translate(-12px, -50%);
+  top: 50%;
+  width: 30px;
+  height: 40px;
+  background-color: aqua; 
+}
+
+.grid {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.grid .line {
+  position: absolute;
+  height: 100vh;
+  width: 32px;
+  border:1px solid $border-color; 
+  border-top: none;
+  border-bottom: none;
+  transform: translateX(-16px); 
+}
+
+.grid .line:first-of-type {
+  border-left: none;
+}
+.grid .line:last-of-type {
+  border-right: none;
+}
+
+.outer-span {
+  color: brown;
+  background: brown;
+}
+
+.inner-span {
+  visibility: hidden;
+}
+
+.cell-settings {
+  position: absolute;
+  top: -40px;
+}
