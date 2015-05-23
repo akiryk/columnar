@@ -12549,7 +12549,7 @@ var columnar = {
   },
 
   onResize: function(){
-    this.totalWidth = this.$cellWrapper.width();
+    this.totalWidth = this.getTotalFluidWidth();
     this.setColumns();
     this.redrawGridLines();
   },
@@ -12563,12 +12563,13 @@ var columnar = {
   },
 
   cacheVars: function(){
-    this.$currentCell = null;
-    this.$nextCell = null;
-    this.$cellWrapper = $("#cell-wrapper");
-    this.$cellList = $(".cell", this.$cellWrapper);
-    this.totalWidth = this.$cellWrapper.width();
-    this.cellWidth = 1 / this.$cellList.length * 100 + "%";
+    this.$currentColumn = null;
+    this.$nextColumn = null;
+    this.$colWrapper = $("#cell-wrapper");
+    this.$columnList = $(".cell", this.$colWrapper);
+    this.totalFluidWidth = 0;
+    this.totalWidth = this.getTotalFluidWidth();
+    this.columnWidth = 1 / this.$columnList.length * 100 + "%";
     this.containmentOffset = 1/12 * this.totalWidth;
   },
 
@@ -12594,15 +12595,14 @@ var columnar = {
   },
 
   setColumns: function(){
-
     if ( this.totalColumns === 5 ) {
-      this.cellWidth = 1/6 * 100 + "%";
+      this.columnWidth = 1/6 * 100 + "%";
     }
 
     // Set column widths
-    this.$cellList.each( function(i, el){
+    this.$columnList.each( function(i, el){
       var $this = $(this),
-          width = columnar.cellWidth,
+          width = columnar.columnWidth,
           fixedWidth = $this.data("fixedWidth");
 
       if ( fixedWidth ) {
@@ -12617,6 +12617,40 @@ var columnar = {
 
   },
 
+  /* 
+   * Update Fluid Columns
+   *
+   * Check whether each column should be fixed or fluid
+   * and adjust the percentage width of fluid columns accordingly.
+   * e.g. if there are only two fluid columns, set their width
+   * to 50%; if there are 3, set to 33%.
+   */
+  updateFluidColumns: function(){
+    var len = this.$columnList.length;
+    if (this.getFirstColumn().data("fixedWidth")){
+      len--;
+    };
+    if (this.getLastColumn().data("fixedWidth")){
+      len--;
+    }
+    var columnWidth = 1 / len * 100 + "%";
+    this.$columnList.each( function( i, el ){
+      if( !$(this).data("fixedWidth")) {
+        $(this).css("flex-basis", columnWidth);
+      }
+    });
+  },
+
+  getFluidColumns: function(){
+    var arr = [];
+    this.$columnList.each( function( i, el ){
+      if( !$(this).data("fixedWidth")) {
+        arr[i] = el;
+      }
+    });
+    return arr;
+  },
+
   createGuideGrid: function(){
     $(".line").each( function(i, el){
       var p = i/12 * columnar.totalWidth;
@@ -12625,9 +12659,9 @@ var columnar = {
   },
 
   redrawGridLines: function(){
-    var len = this.$cellList.length,
-        $first = this.$cellList.eq(0),
-        $last = this.$cellList.eq(len-1),
+    var len = this.$columnList.length,
+        $first = this.getFirstColumn(),
+        $last = this.getLastColumn(),
         l = $first.data( "fixedWidth" ) ? $first.width() : 0,
         r = $last.data( "fixedWidth" ) ? $last.width() : 0,
         x; // left offset for each gridline
@@ -12635,6 +12669,14 @@ var columnar = {
       x = l + i/12 * ( columnar.totalWidth - l - r ) ;
       $(this).css("left", x + "px");
     });
+  },
+
+  getFirstColumn: function(){
+    return this.$columnList.eq(0);
+  },
+
+  getLastColumn: function(){
+    return this.$columnList.last();
   },
 
   initDragger: function(){
@@ -12646,9 +12688,9 @@ var columnar = {
           axis: 'x',
           handle: '.handle',
           containment: ca,
-          start: c.onStart,
-          stop: c.onStop,
-          drag: c.onMove,
+          start: c.onDragStart,
+          stop: c.onDragStop,
+          drag: c.onDragMove,
         });
       }
     );
@@ -12663,99 +12705,103 @@ var columnar = {
     });
 
     function onChangeWidthType(e){
-
-      var $thisCell = $(this).closest(".cell"),
-          $prevCell = $thisCell.prev();
-
-      if ( $(e.target).val() === "fixed" ){
-
-        // Fixed width column!
-
-        var w = $thisCell.width();
-        setFixedWidth.bind( $thisCell, w );
-        
-        if ( $prevCell.length ){
-          $prevCell.find(".dragger").hide();  
-        }
-
-        $thisCell.find(".dragger").hide();
-
-        var $input = $("<input type='number' max='480' min='50' class='fixedWidthInput' />");
-        $(this).prepend( $input );
-        
-        $input
-          .val(w)
-          .on("change", onChangeFixedWidth)
-          .trigger("change");
-
+      if ( $(e.target).val() === "fixed" ){ 
+        var fixParentCol = setFixedWidth.bind($(this)); // this is the form
+        fixParentCol();
       } else {
-
-        // Fluid column!
-
-        $thisCell
-          .css( {
-            "flex-grow": "0", 
-            "flex-shrink": "1",
-            "flex-basis": "25%" 
-            } ) 
-          .removeData("fixedWidth")
-          .find(".fixedWidthInput")
-          .remove();
-
-        if ( $prevCell.length ){
-          $prevCell.find(".dragger").show();  
-        }
-        $thisCell.find(".dragger").show();
-
-        columnar.setColumns();
-
+        var fluidParentCol = setFluidWidth.bind($(this));
+        fluidParentCol();
       }
     };
 
     function onChangeFixedWidth(e){
       e.stopPropagation();
       var w = $(this).val(),
-          $thisCell = $(this).closest(".cell");
+          $currentColumn = $(this).closest(".cell");
       // Check to make sure number is within limits before doing anything:
       if (w < 1500 && w > 50){
-        $thisCell.data( "fixedWidth", w );
-        $thisCell.css( {
+        $currentColumn.data( "fixedWidth", w );
+        $currentColumn.css( {
           "flex-grow": "0", 
           "flex-shrink": "0",
           "flex-basis": w + "px"
           } 
         );
       } else {
-        $(this).val( $thisCell.data( "fixedWidth" ) );
+        $(this).val( $currentColumn.data( "fixedWidth" ) );
       }
-      columnar.redrawGridLines( $thisCell );
+
+      columnar.redrawGridLines( $currentColumn );
     };
 
-    function setFixedWidth( w ){
-      //var fw = $thisCell.width();
+    function setFluidWidth(){
+      var $this = $(this),
+          $currentColumn = $this.closest(".cell"),
+          $prevColumn = $this.prev();
 
-        $(this).css( {
+      $currentColumn
+        .css( {
           "flex-grow": "0", 
-          "flex-shrink": "0",
-          "flex-basis": w + "px"
-          } 
-        );
+          "flex-shrink": "1",
+          "flex-basis": "25%" 
+          } ) 
+        .removeData("fixedWidth")
+        .find(".fixedWidthInput")
+        .remove();
 
-        $(this).data( "fixedWidth", w );
+      if ( $prevColumn.length ){
+        $prevColumn.find(".dragger").show();  
+      }
+      $currentColumn.find(".dragger").show();
+
+      columnar.setColumns();
+      columnar.redrawGridLines( $currentColumn );
+    };
+
+    function setFixedWidth(){
+      var $this = $(this),
+          $currentColumn = $this.closest(".cell"),
+          $prevColumn = $currentColumn.prev(),
+          w = $currentColumn.width();
+        
+      if ( $prevColumn.length ){
+        $prevColumn.find(".dragger").hide();  
+      }
+
+      $currentColumn.find(".dragger").hide();
+
+      var $input = $("<input type='number' max='480' min='50' class='fixedWidthInput' />");
+      $this.prepend( $input );
+      
+      $input
+        .val(w)
+        .on("change", onChangeFixedWidth)
+        .trigger("change");
+
+      $this.css( {
+        "flex-grow": "0", 
+        "flex-shrink": "0",
+        "flex-basis": w + "px"
+        } 
+      );
+
+      $this.data( "fixedWidth", w );
+      columnar.totalFluidWidth += w;
+      columnar.updateFluidColumns();
     }
 
   },
 
-  onStart: function( e, ui ) {
+  onDragStart: function( e, ui ) {
     var $this = $(this);
     $this.css("transform", "translateX(-3px)");
-    columnar.$currentCell = $this.closest(".cell");
-    columnar.$nextCell = columnar.$currentCell.next();
-    columnar.workingWidth = parseFloat(columnar.$currentCell.css("flex-basis")) 
-      + parseFloat(columnar.$nextCell.css("flex-basis"));
+    columnar.$currentColumn = $this.closest(".cell");
+    columnar.$nextColumn = columnar.$currentColumn.next();
+    columnar.workingWidth = parseFloat(columnar.$currentColumn.css("flex-basis")) 
+      + parseFloat(columnar.$nextColumn.css("flex-basis"));
   },
 
-  onStop: function( e, ui ) {
+  onDragStop: function( e, ui ) {
 
     var closestGridLine = columnar.findClosestInjQueryObject(ui.offset.left, $(".line"), 16);
     var target = closestGridLine - $(this).parent().offset().left;
@@ -12776,29 +12822,32 @@ var columnar = {
     columnar.setContainment();
   },
 
-  animateColumns: function(obj, b, c){
-    var len = columnar.$cellList.length,
-        $first = columnar.$cellList.eq(0),
-        $last = columnar.$cellList.eq(len-1),
-        l = $first.data( "fixedWidth" ) ? $first.width() : 0,
-        r = $last.data( "fixedWidth" ) ? $last.width() : 0;
-        // x = l + i/ 12 * ( columnar.totalWidth - l - r ) ;
-    // $(this).css("left", x + "px");
-    var percentage = ($(this)[0].offsetLeft / ( columnar.totalWidth - l - r ) ) * 100;
-    console.log( $(this)[0].offsetLeft );
-    console.log( columnar.totalWidth - l - r );
-    console.log( percentage );
+  onDragMove: function( e, ui ) {
+    var percentage = (ui.position.left / columnar.getTotalFluidWidth() ) * 100;
     columnar.updateActiveCells( percentage );
   },
 
-  onMove: function( e, ui ) {
-    var percentage = (ui.position.left / columnar.totalWidth) * 100;
+  animateColumns: function(obj, b, c){
+    var len = columnar.$columnList.length,
+        $first = columnar.$columnList.eq(0),
+        $last = columnar.$columnList.eq(len-1),
+        l = $first.data( "fixedWidth" ) ? $first.width() : 0,
+        r = $last.data( "fixedWidth" ) ? $last.width() : 0;
+
+    var percentage = ($(this)[0].offsetLeft / ( columnar.totalWidth - l - r ) ) * 100;
     columnar.updateActiveCells( percentage );
   },
 
   updateActiveCells: function( percentage ){
-    columnar.$currentCell.css("flex-basis", percentage + "%");
-    columnar.$nextCell.css("flex-basis", (columnar.workingWidth - percentage) + "%");
+    columnar.$currentColumn.css("flex-basis", percentage + "%");
+    columnar.$nextColumn.css("flex-basis", (columnar.workingWidth - percentage) + "%");
+  },
+
+  /*
+   * Find all fluid columns and return the sum of their widths 
+   */
+  getTotalFluidWidth: function(){
+    return this.$colWrapper.width() - this.totalFluidWidth;
   },
 
   getContainment: function( $dragger ){
