@@ -423,19 +423,40 @@ p:last-line {
 }
 
 main {
-  position: relative;
   width: 90%;
-  max-width: 1200px;
+  max-width: 100em;
   margin: 3em auto;
 }
 
-#cell-wrapper {
+.column-wrapper {
   background: #fff;
+  position: relative;
+}
+
+#columns {
   display: flex;
   justify-content: flex-start;
   flex-flow: row nowrap;
   border: 1px solid rgba(0, 0, 0, 0.15);
   min-height: 30em;
+}
+
+pre {
+  background: #021A32;
+  color: #fff;
+  padding: 1em;
+}
+
+.tagname {
+  color: #FF386D;
+}
+
+.attrname {
+  color: #65FF0B;
+}
+
+.propname {
+  color: #f7eb74;
 }
 
 .cell {
@@ -468,9 +489,9 @@ h4 {
 .handle {
   cursor: move;
   position: absolute;
-  transform: translate(-12px, -50%);
+  transform: translate(-14px, -50%);
   top: 50%;
-  width: 30px;
+  width: 32px;
   height: 40px;
   background-color: aqua;
 }

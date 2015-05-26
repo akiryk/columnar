@@ -1,17 +1,41 @@
 main {
-   position: relative;
    width: 90%;
-   max-width: 1200px;
+   max-width: 100em;
    margin: 3em auto;
 }
 
-#cell-wrapper {
+.column-wrapper {
   background: #fff; 
+  position: relative;
+}
+
+#columns {
   display: flex;
   justify-content: flex-start;
   flex-flow: row nowrap;
   border: 1px solid $border-color; 
   min-height: 30em;
+}
+
+#markup{
+  
+}
+
+pre {
+  background: #021A32;
+  color: #fff;
+  padding: 1em;
+}
+
+.tagname {
+  color: #FF386D;
+}
+
+.attrname {
+  color: #65FF0B;
+}
+.propname {
+  color: rgb(247, 235, 116);
 }
 
 .cell {
@@ -20,7 +44,6 @@ main {
   flex: 0 1 auto;
   width: 200px;
   position: relative;
-  // padding: 1em;
 }
 
 h4 {
@@ -45,9 +68,9 @@ h4 {
 .handle {
   cursor: move;
   position: absolute;
-  transform: translate(-12px, -50%);
+  transform: translate(-14px, -50%);
   top: 50%;
-  width: 30px;
+  width: 32px;
   height: 40px;
   background-color: aqua; 
 }
