@@ -24,15 +24,19 @@
   <div class="controls">
     <form id="settings">
       <label for=numcolumns>Columns</label>
-      <input type="range" min="1" max="6" value="4" id="numcolumns" step="1" list="totalColumns">
-      <datalist id="totalColumns">
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-        <option>4</option>
-        <option>5</option>
-        <option>6</option>
-      </datalist>
+      <div class="range-slider">
+        <input id="numcolumns" class="input-range" type="range" value="4" step="1" list="totalColumns" min="1" max="6">
+        <span class="range-value"></span>
+        <datalist id="totalColumns">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+          <option>6</option>
+        </datalist>
+      </div> 
+      
 
       <label for=gutter>Gutter width:</label>
       <input type="number" min="6" max="48" value="32" id="gutter" step="1">
@@ -44,28 +48,10 @@
       <div id="columns">
         <!-- js-generated content goes here -->
       </div>
-      <div class="grid" id="grid">
-        <div class="line a">dfdfdf</div>
-        <div class="line b"></div>
-        <div class="line c"></div>
-        <div class="line d"></div>
-        <div class="line e"></div>
-        <div class="line f"></div>
-        <div class="line g"></div>
-        <div class="line h"></div>
-        <div class="line i"></div>
-        <div class="line j"></div>
-        <div class="line k"></div>
-        <div class="line l"></div>
-        <div class="line m"></div>
-      </div>
+     
     </div>
-    <pre id="markup">
-    
-    </pre>
-    <pre id="css">
-      
-    </pre>
+    <pre><code id="markup"></code></pre>
+    <pre><code id="css"></code></pre>
   </main>
 
 

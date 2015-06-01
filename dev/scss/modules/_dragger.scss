@@ -35,9 +35,14 @@ pre {
   color: #65FF0B;
 }
 .propname {
-  color: rgb(247, 235, 116);
+  color: pink;
 }
-
+.classname {
+  color: gold;
+}
+.valuename {
+  color: aqua;
+}
 .cell {
   align-items: center;
   display: flex;
