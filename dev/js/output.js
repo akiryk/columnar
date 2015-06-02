@@ -4,8 +4,8 @@ var markupGenerator = (function(){
 
   // private variables
   var gutterEms = 2,
-      $markup = $( "#markup" ),
-      $css = $( "#css" );
+      $markup,
+      $css;
 
   // private methods
 
@@ -153,8 +153,14 @@ var markupGenerator = (function(){
 
       html += getEndTag( "div" );
 
-      $markup.html( html );
+      if ( !$markup ){
+        $( "#output" ).append('<pre class="output-text"><code id="markup"></code></pre>');
+        $( "#output").append('<pre class="output-text"><code id="css"></code></pre>');
+        $markup = $( "#markup" );
+        $css = $( "#css" );
+      }
 
+      $markup.html( html );
       $css.html( css );
 
     },

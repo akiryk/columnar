@@ -1,10 +1,28 @@
 (function setEvents(){
 
-  $( "#settings" ).on( "change", function(e){
+  var numColsOutput = document.getElementById('num-columns-output'),
+      numcolumns = document.getElementById('numcolumns'),
+      numEmsOutput = document.getElementById('num-ems-output'),
+      gutterWidth = document.getElementById('gutter-width'),
+      settings = document.getElementById('settings'),
+      generate = document.getElementById('generate');
+
+  numColsOutput.innerHTML = numcolumns.value;
+  numEmsOutput.innerHTML = gutterWidth.value + 'px';
+
+  numcolumns.addEventListener("input", function(e){
+    numColsOutput.innerHTML = e.target.value;
+  });
+
+  gutterWidth.addEventListener("input", function(e){
+    numEmsOutput.innerHTML = e.target.value + "px";
+  });
+
+  settings.addEventListener( "change", function(e){
     var targ = e.target,
         id = targ.getAttribute("id");
     switch ( id ) {
-      case "gutter":
+      case "gutter-width":
         columnsLayout.changeGutterWidth( targ.value );
         markupGenerator.changePaddingWidth( targ.value );
         break;
@@ -14,21 +32,12 @@
     }
   });
 
-  $( "#generate" ).on( "click", function(e) {
+  generate.addEventListener( "click", function(e) {
     e.preventDefault();
     var $columnList = columnsLayout.getColumnList();
     markupGenerator.generateMarkup( $columnList );
   });
 
-  $( window ).on( "resize", columnsLayout.onResize );
-
-  var range = document.querySelector('#numcolumns'),
-      value = document.querySelector('.range-value');
-    
-  value.innerHTML = range.getAttribute('value');
-
-  range.addEventListener('input', function( e ){
-    value.innerHTML = e.target.value;
-  }); 
+  window.addEventListener( "resize", columnsLayout.onResize );
 
 })();

@@ -410,7 +410,12 @@ img {
 }
 
 body {
-  background-color: #eee;
+  background-color: #1f1f1f;
+  height: 100vh;
+}
+
+h4 {
+  margin: auto;
 }
 
 p {
@@ -418,76 +423,77 @@ p {
   margin: 1em 0;
 }
 
-p:last-line {
-  color: red;
+pre {
+  background: #161a1b;
+  box-shadow: inset 0 0 1em rgba(0, 0, 0, 0.25);
+  color: #fff;
+  padding: 2em;
 }
 
-main {
+.container {
   width: 90%;
   max-width: 100em;
-  margin: 3em auto;
+  margin: 0 auto;
 }
 
+.flex-container {
+  display: flex;
+  flex-direction: column;
+}
+
+@media screen and (min-width: 60em) {
+  .output-text {
+    color: #ccc;
+    flex: 1 0 0%;
+    margin: 0 1em;
+  }
+
+  .flex-container {
+    flex-direction: row;
+  }
+}
 .column-wrapper {
-  background: #fff;
+  background-color: transparent;
   position: relative;
+  margin-bottom: 3em;
 }
 
-#columns {
+.columns {
   display: flex;
   justify-content: flex-start;
   flex-flow: row nowrap;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  min-height: 30em;
+  height: 16em;
 }
 
-pre {
-  background: #021A32;
-  color: #fff;
-  padding: 1em;
-}
-
-.tagname {
-  color: #FF386D;
-}
-
-.attrname {
-  color: #65FF0B;
-}
-
-.propname {
-  color: pink;
-}
-
-.classname {
-  color: gold;
-}
-
-.valuename {
-  color: aqua;
-}
-
-.cell {
-  align-items: center;
+.column {
+  align-items: stretch;
   display: flex;
   flex: 0 1 auto;
-  width: 200px;
   position: relative;
 }
 
-h4 {
-  margin: auto;
+.inner {
+  background-color: rgba(132, 149, 156, 0.085);
+  margin: 1em 15px;
+  transition: background-color .25s;
+  width: 100%;
 }
 
-.inner {
-  margin: 1em 15px;
-  width: 100%;
+.highlight-left .inner {
+  border-left: 1px solid #f8c741;
+  background-color: rgba(171, 231, 255, 0.2);
+}
+
+.highlight-right .inner {
+  border-right: 1px solid #f8c741;
+  background-color: rgba(171, 231, 255, 0.2);
 }
 
 .dragger {
   position: absolute;
   right: 0;
-  background: #0156E2;
+  left: auto;
+  background: transparent;
   height: 100%;
   width: 6px;
   transform: translateX(3px);
@@ -495,82 +501,68 @@ h4 {
 }
 
 .handle {
+  border-radius: 3px;
   cursor: move;
   position: absolute;
-  transform: translate(-14px, -50%);
+  transform: translate(-50%, -50%);
+  margin-left: 50%;
   top: 50%;
-  width: 32px;
+  width: 300%;
   height: 40px;
-  background-color: aqua;
+  background-color: #f8c741;
 }
 
-.grid {
-  position: absolute;
-  left: 0;
-  top: 0;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
+.ui-draggable-dragging .handle {
+  background-color: #f8c741;
 }
 
-.grid .line {
-  position: absolute;
-  height: 100vh;
-  width: 32px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-top: none;
-  border-bottom: none;
-  transform: translateX(-16px);
+/* 
+ * Settings
+ *
+ * Styles for the slider and other form inputs
+ */
+.controls {
+  background: #2e3537;
+  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.25);
+  padding: 2em 0;
+  margin-bottom: 3em;
 }
 
-.grid .line:first-of-type {
-  border-left: none;
+.settings {
+  display: flex;
+  padding: 0 1em;
 }
 
-.grid .line:last-of-type {
-  border-right: none;
+.setting {
+  flex: 1 0 0%;
 }
 
-.outer-span {
-  color: brown;
-  background: brown;
-}
-
-.inner-span {
-  visibility: hidden;
-}
-
-.cell-settings {
-  position: absolute;
-  top: -40px;
-}
-
-.range-slider .input-range {
+.input-range {
   cursor: pointer;
   -webkit-appearance: none;
-  width: 300px;
+  width: 12em;
   height: 10px;
   border-radius: 5px;
-  background: #ccc;
+  background: #7DA6B2;
   outline: none;
 }
-.range-slider .input-range::-webkit-slider-thumb {
+.input-range::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #353535;
+  background: #f8c741;
   cursor: pointer;
   -webkit-transition: background .15s ease-in-out;
   transition: background .15s ease-in-out;
 }
-.range-slider .input-range::-webkit-slider-thumb:hover {
-  background: #e06161;
+.input-range::-webkit-slider-thumb:hover {
+  background: #f8c741;
 }
-.range-slider .input-range:active::-webkit-slider-thumb {
-  background: #e06161;
+.input-range:active::-webkit-slider-thumb {
+  background: #f8c741;
 }
-.range-slider .input-range::-moz-range-thumb {
+.input-range::-moz-range-thumb {
   width: 20px;
   height: 20px;
   border: 0;
@@ -580,16 +572,16 @@ h4 {
   -webkit-transition: background .15s ease-in-out;
   transition: background .15s ease-in-out;
 }
-.range-slider .input-range::-moz-range-thumb:hover {
+.input-range::-moz-range-thumb:hover {
   background: #e06161;
 }
-.range-slider .input-range:active::-moz-range-thumb {
+.input-range:active::-moz-range-thumb {
   background: #e06161;
 }
-.range-slider .range-value {
+
+.range-value {
   display: inline-block;
   position: relative;
-  width: 60px;
   color: #fff;
   font-size: 16px;
   line-height: 20px;
@@ -599,7 +591,7 @@ h4 {
   padding: 5px 10px;
   margin-left: 7px;
 }
-.range-slider .range-value:after {
+.range-value:after {
   position: absolute;
   top: 8px;
   left: -7px;
@@ -618,4 +610,84 @@ h4 {
 
 input::-moz-focus-inner {
   border: 0;
+}
+
+.grid {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.grid .line {
+  position: absolute;
+  height: 100vh;
+  width: 32px;
+  border: 1px solid #2c2c2c;
+  border-top: none;
+  border-bottom: none;
+  transform: translateX(-16px);
+}
+
+.grid .line:first-of-type {
+  border-left: none;
+}
+
+.grid .line:last-of-type {
+  border-right: none;
+}
+
+/* 
+ * Output
+ * 
+ * Styles for html markup and css that's output to the page in a <pre> tag
+ */
+.output-text {
+  color: #ccc;
+  flex: 1 0 100%;
+}
+
+.tagname {
+  color: #be4f37;
+}
+
+.attrname {
+  color: #2ab95e;
+}
+
+.propname {
+  color: pink;
+  color: #c09593;
+}
+
+.classname {
+  color: gold;
+  color: #bdbf26;
+}
+
+.valuename {
+  color: #22a1c0;
+}
+
+@media screen and (min-width: 60em) {
+  .output-text {
+    color: #ccc;
+    flex: 1 0 0%;
+    margin: 0 1em;
+  }
+}
+/*
+ * Dummy Text
+ *
+ * Styles for lorem ipsum text that appears inside the grid columns
+ */
+.outer-span {
+  color: #1a1a1a;
+  background: #1a1a1a;
+}
+
+.inner-span {
+  visibility: hidden;
 }

@@ -20,38 +20,37 @@
     <link rel="stylesheet" href="dev/css/style.css">
 </head>
 <body>
-  <main>
   <div class="controls">
-    <form id="settings">
-      <label for=numcolumns>Columns</label>
-      <div class="range-slider">
-        <input id="numcolumns" class="input-range" type="range" value="4" step="1" list="totalColumns" min="1" max="6">
-        <span class="range-value"></span>
-        <datalist id="totalColumns">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-          <option>5</option>
-          <option>6</option>
-        </datalist>
-      </div> 
-      
-
-      <label for=gutter>Gutter width:</label>
-      <input type="number" min="6" max="48" value="32" id="gutter" step="1">
-      <span id="gutterInEms"></span>
-      <input type="submit" value="Generate Markup" id="generate">
+    <form id="settings" class="settings container">
+      <div class="setting">
+        <!-- <label for=numcolumns>Columns</label> -->
+        <!-- <input type="range" min="1" max="6" value="4" id="numcolumns" step="1" list="totalColumns"> -->
+        <div class="range-slider">
+          <input id="numcolumns" class="input-range" type="range" value="4" step="1" list="totalColumns" min="1" max="6">
+          <span id="num-columns-output" class="range-value"></span>
+        </div> 
+      </div>
+      <div class="setting">
+        <!-- <label for=gutter>Gutter width:</label> -->
+        <!-- <input type="number" min="6" max="48" value="32" id="gutter" step="1"> -->
+        <div class="range-slider">
+          <input id="gutter-width" class="input-range" type="range" value="32" step="1" min="2" max="48">
+          <span id="num-ems-output" class="range-value"></span>
+        </div> 
+      </div>
+      <div class="setting">
+        <input type="submit" value="Generate Markup" id="generate">
+      </div>    
     </form>
   </div>
-    <div class="column-wrapper">
-      <div id="columns">
+    <div class="column-wrapper container">
+      <div id="columns" class="columns">
         <!-- js-generated content goes here -->
       </div>
-     
     </div>
-    <pre><code id="markup"></code></pre>
-    <pre><code id="css"></code></pre>
+    <div id="output" class="container flex-container">
+      
+    </div>
   </main>
 
 

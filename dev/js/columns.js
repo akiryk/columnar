@@ -12,12 +12,11 @@ var columnsLayout = (function(){
 
   // cache some helpers
   var gutterPx = 32,
-      gutterEms = gutter/16,
       gridColumns = 12,
       totalColumns = 4,
       totalWidth,
       containmentOffset,
-      useLoremText = true,
+      useLoremText = false,
       workingWidth,
       
       lorem = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod " +
@@ -33,10 +32,11 @@ var columnsLayout = (function(){
   };
 
   var getRandomLoremIpsum = function( min, max ){
-    if ( !useLoremText ) return;
+    if ( !useLoremText ) return "";
     var min = min ? min : 15,
-        max = max ? max : lorem.length - 250;
-    return getLorem( 0, Math.floor( Math.random() * max ) + min );
+        max = max ? max : lorem.length - 250,
+        lorem = getLorem( 0, Math.floor( Math.random() * max ) + min );
+    return "<p><span class='outer-span'><span class='inner-span'>" + lorem + "</span></span></p>"
   };
 
   var createGuideGrid = function(){
@@ -44,7 +44,7 @@ var columnsLayout = (function(){
     for (var i=0; i<gridColumns+1; i++){
       $gridWrapper.append("<div class='line'></div>\n");
     }
-    $columns.after( $gridWrapper );
+    $columns.before( $gridWrapper );
     $( ".line" ).each( function(i, el){
       var p = i/12 * totalWidth;
       $( this ).css( "left", p + "px" );
@@ -57,10 +57,10 @@ var columnsLayout = (function(){
         dragger = "<div class='dragger'><div class='handle'></div></div>";
 
     for (var i=0; i<cols-1; i++){
-      markup += "<div class='cell'>" + dragger + "<div class='inner'><p><span class='outer-span'><span class='inner-span'>" + getRandomLoremIpsum() + "</span></span></p></div></div>";
+      markup += "<div class='column'>" + dragger + "<div class='inner'>" + getRandomLoremIpsum() + "</div></div>";
     }
 
-    markup += "<div class='cell last'><div class='inner'><p><span class='outer-span'><span class='inner-span'>" + getRandomLoremIpsum() + "</span></span></p></div></div>";
+    markup += "<div class='column last'><div class='inner'>" + getRandomLoremIpsum() + "</div></div>";
 
     $columns.html( markup );
   };
@@ -147,7 +147,7 @@ var columnsLayout = (function(){
   };
 
   var updateColumnVars = function(){
-    $columnList = $( ".cell", $columns );
+    $columnList = $( ".column", $columns );
     setTotalWidth();
     containmentOffset = 1/12 * totalWidth;
   }
@@ -157,12 +157,6 @@ var columnsLayout = (function(){
       "width": gutterPx + "px",
       "transform": "translateX(-" + gutterPx/2 + "px)"
     })
-  }
-
-  var setGutterEms = function(){
-    gutterEms = gutterPx / 16;
-    var ems = gutterEms === 1 ? gutterEms + "em" : gutterEms + "ems";
-    $( "#gutterInEms" ).html( ems );
   }
 
   var styleInnerContent = function(){
@@ -185,8 +179,10 @@ var columnsLayout = (function(){
   var onDragStart = function( e, ui ) {
     var $this = $( this );
     $this.css( "transform", "translateX(-3px)" );
-    $currentColumn = $this.closest( ".cell" );
+    $currentColumn = $this.closest( ".column" );
     $nextColumn = $currentColumn.next();
+    $currentColumn.toggleClass("highlight-right");
+    $nextColumn.toggleClass("highlight-left");
     workingWidth = parseFloat($currentColumn.css( "flex-basis" )) 
       + parseFloat($nextColumn.css( "flex-basis" ));
   }
@@ -201,21 +197,24 @@ var columnsLayout = (function(){
     var basis = closestGridLine.id;
     var col = parseInt($(this).data("id") + 1);
     var prevCols = col > 1 ? getPrevCols( $(this).parent() ) : 0;
-    $( this )
+    var $this = $( this );
+    $this
       .parent()
       .data({
         "startCol": basis
       });
-    $( this ).animate(
+    $this.animate(
       { left: target }, 
       { duration: 100, 
         easing: "swing", 
         complete: function(){
-           $( this ).css({
+          $this.css({
             "left": "auto",
             "right": "0",
             "transform": "translateX(3px)"
           });
+          $currentColumn.toggleClass("highlight-right");
+          $nextColumn.toggleClass("highlight-left");
         },
         progress: animateColumns,
       });
@@ -225,15 +224,15 @@ var columnsLayout = (function(){
 
   var onDragMove = function( e, ui ) {
     var percentage = (ui.position.left / getTotalWidth() ) * 100;
-    updateActiveCells( percentage );
+    updateActiveColumns( percentage );
   }
 
   var animateColumns = function( obj, b, c ){
     var percentage = ( $( this )[0].offsetLeft / totalWidth  ) * 100;
-    updateActiveCells( percentage );
+    updateActiveColumns( percentage );
   }
 
-  var updateActiveCells = function( percentage ){
+  var updateActiveColumns = function( percentage ){
     $currentColumn.css( "flex-basis", percentage + "%" );
     $nextColumn.css( "flex-basis", (workingWidth - percentage) + "%" );
   }
@@ -244,7 +243,6 @@ var columnsLayout = (function(){
     init: function(){
       renderColumns();
       updateColumnVars();
-      setGutterEms();
       renderGutter();
       styleInnerContent();
       setColumnWidths();
@@ -255,7 +253,6 @@ var columnsLayout = (function(){
     changeGutterWidth: function( w ){
       gutterPx = w;
       renderGutter();
-      setGutterEms();
       styleInnerContent();
     },
 
@@ -265,6 +262,10 @@ var columnsLayout = (function(){
       updateColumnVars();
       setColumnWidths();
       initDraggers();
+      if ( gutterPx !== 32 ) {
+        renderGutter();
+        styleInnerContent();
+      }
     },
 
     onResize: function(){
