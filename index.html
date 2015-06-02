@@ -17,30 +17,26 @@
 
     <title>dragger</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href='http://fonts.googleapis.com/css?family=Lato:300' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="dev/css/style.css">
 </head>
 <body>
   <div class="controls">
     <form id="settings" class="settings container">
       <div class="setting">
-        <!-- <label for=numcolumns>Columns</label> -->
-        <!-- <input type="range" min="1" max="6" value="4" id="numcolumns" step="1" list="totalColumns"> -->
+      <h2 class="settings-title">Number of Columns</h2>
         <div class="range-slider">
           <input id="numcolumns" class="input-range" type="range" value="4" step="1" list="totalColumns" min="1" max="6">
           <span id="num-columns-output" class="range-value"></span>
         </div> 
       </div>
       <div class="setting">
-        <!-- <label for=gutter>Gutter width:</label> -->
-        <!-- <input type="number" min="6" max="48" value="32" id="gutter" step="1"> -->
+        <h2 class="settings-title">Gutter Width</h2>
         <div class="range-slider">
           <input id="gutter-width" class="input-range" type="range" value="32" step="1" min="2" max="48">
           <span id="num-ems-output" class="range-value"></span>
         </div> 
       </div>
-      <div class="setting">
-        <input type="submit" value="Generate Markup" id="generate">
-      </div>    
     </form>
   </div>
     <div class="column-wrapper container">

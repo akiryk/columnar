@@ -1,0 +1,47 @@
+/* 
+ * Output
+ * 
+ * Styles for html markup and css that's output to the page in a <pre> tag
+ */
+
+code {
+  transition: opacity .5s;
+}
+
+.fade-down code {
+  opacity: 0.33;
+}
+
+.output-text {
+  color: #ccc;
+  flex: 1 0 100%;
+}
+
+.tagname {
+  color: #be4f37;
+}
+
+.attrname {
+  color: #2ab95e;
+}
+.propname {
+  color: pink;
+  color: #c09593;
+}
+.classname {
+  color: gold;
+  color: #bdbf26;
+  
+}
+.valuename {
+  // color: aqua;
+  color: #22a1c0
+}
+
+@media screen and (min-width: $desktop){
+  .output-text {
+    color: #ccc;
+    flex: 1 0 0%;
+    margin: 0 1em;
+  }
+}

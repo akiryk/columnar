@@ -1,0 +1,14 @@
+/*
+ * Dummy Text
+ *
+ * Styles for lorem ipsum text that appears inside the grid columns
+ */
+
+.outer-span {
+  color: $dummyTextColor;
+  background: $dummyTextColor;
+}
+
+.inner-span {
+  visibility: hidden;
+}

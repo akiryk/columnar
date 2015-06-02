@@ -12697,12 +12697,13 @@ var columnsLayout = (function(){
   }
 
   var onDragStop = function( e, ui ) {
-    var closestGridLine = findClosestGridLine(ui.offset.left, $( ".line" ), gutterPx/2);
-    var target = closestGridLine.x - $( this ).parent().offset().left;
-    var basis = closestGridLine.id;
-    var col = parseInt($(this).data("id") + 1);
-    var prevCols = col > 1 ? getPrevCols( $(this).parent() ) : 0;
-    var $this = $( this );
+    var closestGridLine = findClosestGridLine(ui.offset.left, $( ".line" ), gutterPx/2),
+        target = closestGridLine.x - $( this ).parent().offset().left,
+        basis = closestGridLine.id,
+        col = parseInt($(this).data("id") + 1),
+        $this = $( this ),
+        prevCols = col > 1 ? getPrevCols( $(this).parent() ) : 0;
+
     $this
       .parent()
       .data({
@@ -12720,6 +12721,7 @@ var columnsLayout = (function(){
           });
           $currentColumn.toggleClass("highlight-right");
           $nextColumn.toggleClass("highlight-left");
+          markupGenerator.generateMarkup( $columnList );
         },
         progress: animateColumns,
       });
@@ -12880,10 +12882,16 @@ var markupGenerator = (function(){
       gutterEms = n/16;
     },
 
+    /** 
+      * @desc Create html and css markup for users to copy and paste
+      * @param $columnList is a jquery object of columns in the grid. 
+      * We use it to determine width and other properties of our grid columns.
+    */
     generateMarkup: function( $columnList ){
 
       var html = "",
-          css  = "";
+          css  = "",
+          classesArr = [];
 
       html += getEl({ 
                 indent: 0,
@@ -12891,27 +12899,22 @@ var markupGenerator = (function(){
                 classes: ["flex-container"],
               });
 
-      var cssObject = {
+      css += getCss( {
                         classname: "flex-container",
                         props: { 
                           "box-sizing": "border-box", 
                           "display": "flex",
                           "width": "100%"
                         }
-                      };
-      css += getCss( cssObject );
+                      } );
 
-      cssObject = {
+      css += getCss( {
                     classname: "flex-column",
                     props: { 
                       "box-sizing": "inherit", 
                       "padding": "0 " + gutterEms/2 + "em;",
                     }
-                  };
-
-      css += getCss( cssObject )
-
-      var classesArr = [];
+                  } )
 
       $columnList.each( function( i, el){
         // get the width of each column in grid units
@@ -12923,14 +12926,13 @@ var markupGenerator = (function(){
 
         if ( classesArr.indexOf(colClass) == -1 ) {
           classesArr.push(colClass);
-          cssObject = {
+
+          css += getCss( {
                         classname: "flex-column." + colClass,
                         props: { 
                           "flex": "0 0 " + w + "%", 
                         },
-                      };
-
-          css += getCss( cssObject );
+                      } );
         } 
         
         html += getEl({ 
@@ -12943,9 +12945,11 @@ var markupGenerator = (function(){
 
       html += getEndTag( "div" );
 
+      var $output = $( "#output" );
+
       if ( !$markup ){
-        $( "#output" ).append('<pre class="output-text"><code id="markup"></code></pre>');
-        $( "#output").append('<pre class="output-text"><code id="css"></code></pre>');
+        $output.append('<div class="output-text"><h2 class="settings-title">Your HTML</h2><pre><code id="markup"></code></pre></div>');
+        $output.append('<div class="output-text"><h2 class="settings-title">Your CSS</h2><pre><code id="css"></code></pre></div>');
         $markup = $( "#markup" );
         $css = $( "#css" );
       }
@@ -12963,42 +12967,44 @@ var markupGenerator = (function(){
 
   var numColsOutput = document.getElementById('num-columns-output'),
       numcolumns = document.getElementById('numcolumns'),
-      numEmsOutput = document.getElementById('num-ems-output'),
       gutterWidth = document.getElementById('gutter-width'),
-      settings = document.getElementById('settings'),
-      generate = document.getElementById('generate');
+      gutterWidthOutput = document.getElementById('num-ems-output'),
+      settings = document.getElementById('settings');
 
   numColsOutput.innerHTML = numcolumns.value;
-  numEmsOutput.innerHTML = gutterWidth.value + 'px';
+  gutterWidthOutput.innerHTML = gutterWidth.value + 'px';
 
   numcolumns.addEventListener("input", function(e){
     numColsOutput.innerHTML = e.target.value;
   });
 
   gutterWidth.addEventListener("input", function(e){
-    numEmsOutput.innerHTML = e.target.value + "px";
+    gutterWidthOutput.innerHTML = e.target.value + "px";
   });
 
   settings.addEventListener( "change", function(e){
     var targ = e.target,
-        id = targ.getAttribute("id");
+        id = targ.getAttribute("id"),
+        val = targ.value;
     switch ( id ) {
       case "gutter-width":
-        columnsLayout.changeGutterWidth( targ.value );
-        markupGenerator.changePaddingWidth( targ.value );
+        columnsLayout.changeGutterWidth( val );
+        markupGenerator.changePaddingWidth( val );
+        generateMarkup();
         break;
       case "numcolumns":
-        columnsLayout.changeTotalColumns( targ.value );
+        columnsLayout.changeTotalColumns( val );
+        generateMarkup();
         break;
     }
   });
 
-  generate.addEventListener( "click", function(e) {
-    e.preventDefault();
-    var $columnList = columnsLayout.getColumnList();
-    markupGenerator.generateMarkup( $columnList );
-  });
+  function generateMarkup(){
+    markupGenerator.generateMarkup( columnsLayout.getColumnList() )
+  }
 
   window.addEventListener( "resize", columnsLayout.onResize );
+
+  generateMarkup();
 
 })();

@@ -411,6 +411,7 @@ img {
 
 body {
   background-color: #1f1f1f;
+  font-family: "Lato", "Helvetica", sans-serif;
   height: 100vh;
 }
 
@@ -427,9 +428,14 @@ pre {
   background: #161a1b;
   box-shadow: inset 0 0 1em rgba(0, 0, 0, 0.25);
   color: #fff;
-  padding: 2em;
+  padding: .75em;
 }
 
+@media screen and (min-width: 60em) {
+  pre {
+    padding: 2em;
+  }
+}
 .container {
   width: 90%;
   max-width: 100em;
@@ -455,7 +461,7 @@ pre {
 .column-wrapper {
   background-color: transparent;
   position: relative;
-  margin-bottom: 3em;
+  margin-bottom: 1.5em;
 }
 
 .columns {
@@ -473,7 +479,7 @@ pre {
 }
 
 .inner {
-  background-color: rgba(132, 149, 156, 0.085);
+  background-color: rgba(132, 149, 156, 0.25);
   margin: 1em 15px;
   transition: background-color .25s;
   width: 100%;
@@ -489,6 +495,11 @@ pre {
   background-color: rgba(171, 231, 255, 0.2);
 }
 
+@media screen and (min-width: 60em) {
+  .column-wrapper {
+    margin-bottom: 3em;
+  }
+}
 .dragger {
   position: absolute;
   right: 0;
@@ -524,26 +535,41 @@ pre {
 .controls {
   background: #2e3537;
   box-shadow: 0 5px 8px rgba(0, 0, 0, 0.25);
-  padding: 2em 0;
-  margin-bottom: 3em;
+  padding: 1em 0;
+  margin-bottom: 1.5em;
 }
 
 .settings {
   display: flex;
-  padding: 0 1em;
+  flex-direction: column;
+  padding: 0;
 }
 
 .setting {
-  flex: 1 0 0%;
+  flex: 1 0 100%;
+  margin-bottom: 2em;
+}
+
+.setting:last-of-type {
+  margin-bottom: 0;
+}
+
+.settings-title {
+  font-size: 1.125em;
+  margin-top: 0;
+  margin-bottom: 0.25em;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .input-range {
   cursor: pointer;
   -webkit-appearance: none;
-  width: 12em;
+  width: 65%;
   height: 10px;
   border-radius: 5px;
-  background: #7DA6B2;
+  background: #1a2022;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
   outline: none;
 }
 .input-range::-webkit-slider-thumb {
@@ -580,14 +606,15 @@ pre {
 }
 
 .range-value {
+  box-shadow: 4px 2px 6px rgba(0, 0, 0, 0.2);
   display: inline-block;
   position: relative;
-  color: #fff;
+  color: rgba(255, 255, 255, 0.5);
   font-size: 16px;
   line-height: 20px;
   text-align: center;
   border-radius: 3px;
-  background: #353535;
+  background: #394042;
   padding: 5px 10px;
   margin-left: 7px;
 }
@@ -598,7 +625,7 @@ pre {
   width: 0;
   height: 0;
   border-top: 7px solid transparent;
-  border-right: 7px solid #353535;
+  border-right: 7px solid #394042;
   border-bottom: 7px solid transparent;
   content: '';
 }
@@ -612,6 +639,38 @@ input::-moz-focus-inner {
   border: 0;
 }
 
+@media screen and (min-width: 60em) {
+  .controls {
+    padding: 2em 0;
+    margin-bottom: 3em;
+  }
+
+  .settings {
+    flex-direction: row;
+    justify-content: center;
+    padding: 0 1em;
+  }
+
+  .setting {
+    flex: 0 0 auto;
+    margin-bottom: 0;
+  }
+
+  .setting:first-of-type {
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding-right: 2em;
+    margin-right: 2em;
+  }
+
+  .settings-title {
+    text-align: left;
+    margin-bottom: 0.5em;
+  }
+
+  .input-range {
+    width: 12em;
+  }
+}
 .grid {
   position: absolute;
   left: 0;
@@ -644,6 +703,14 @@ input::-moz-focus-inner {
  * 
  * Styles for html markup and css that's output to the page in a <pre> tag
  */
+code {
+  transition: opacity .5s;
+}
+
+.fade-down code {
+  opacity: 0.33;
+}
+
 .output-text {
   color: #ccc;
   flex: 1 0 100%;

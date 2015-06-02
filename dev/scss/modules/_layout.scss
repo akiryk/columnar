@@ -9,7 +9,7 @@
   flex-direction: column;
 }
 
-@media screen and (min-width: 60em){
+@media screen and (min-width: $desktop){
   
   .output-text {
     color: #ccc;

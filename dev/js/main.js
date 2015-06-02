@@ -2,42 +2,44 @@
 
   var numColsOutput = document.getElementById('num-columns-output'),
       numcolumns = document.getElementById('numcolumns'),
-      numEmsOutput = document.getElementById('num-ems-output'),
       gutterWidth = document.getElementById('gutter-width'),
-      settings = document.getElementById('settings'),
-      generate = document.getElementById('generate');
+      gutterWidthOutput = document.getElementById('num-ems-output'),
+      settings = document.getElementById('settings');
 
   numColsOutput.innerHTML = numcolumns.value;
-  numEmsOutput.innerHTML = gutterWidth.value + 'px';
+  gutterWidthOutput.innerHTML = gutterWidth.value + 'px';
 
   numcolumns.addEventListener("input", function(e){
     numColsOutput.innerHTML = e.target.value;
   });
 
   gutterWidth.addEventListener("input", function(e){
-    numEmsOutput.innerHTML = e.target.value + "px";
+    gutterWidthOutput.innerHTML = e.target.value + "px";
   });
 
   settings.addEventListener( "change", function(e){
     var targ = e.target,
-        id = targ.getAttribute("id");
+        id = targ.getAttribute("id"),
+        val = targ.value;
     switch ( id ) {
       case "gutter-width":
-        columnsLayout.changeGutterWidth( targ.value );
-        markupGenerator.changePaddingWidth( targ.value );
+        columnsLayout.changeGutterWidth( val );
+        markupGenerator.changePaddingWidth( val );
+        generateMarkup();
         break;
       case "numcolumns":
-        columnsLayout.changeTotalColumns( targ.value );
+        columnsLayout.changeTotalColumns( val );
+        generateMarkup();
         break;
     }
   });
 
-  generate.addEventListener( "click", function(e) {
-    e.preventDefault();
-    var $columnList = columnsLayout.getColumnList();
-    markupGenerator.generateMarkup( $columnList );
-  });
+  function generateMarkup(){
+    markupGenerator.generateMarkup( columnsLayout.getColumnList() )
+  }
 
   window.addEventListener( "resize", columnsLayout.onResize );
+
+  generateMarkup();
 
 })();

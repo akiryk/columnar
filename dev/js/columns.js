@@ -192,12 +192,13 @@ var columnsLayout = (function(){
   }
 
   var onDragStop = function( e, ui ) {
-    var closestGridLine = findClosestGridLine(ui.offset.left, $( ".line" ), gutterPx/2);
-    var target = closestGridLine.x - $( this ).parent().offset().left;
-    var basis = closestGridLine.id;
-    var col = parseInt($(this).data("id") + 1);
-    var prevCols = col > 1 ? getPrevCols( $(this).parent() ) : 0;
-    var $this = $( this );
+    var closestGridLine = findClosestGridLine(ui.offset.left, $( ".line" ), gutterPx/2),
+        target = closestGridLine.x - $( this ).parent().offset().left,
+        basis = closestGridLine.id,
+        col = parseInt($(this).data("id") + 1),
+        $this = $( this ),
+        prevCols = col > 1 ? getPrevCols( $(this).parent() ) : 0;
+
     $this
       .parent()
       .data({
@@ -215,6 +216,7 @@ var columnsLayout = (function(){
           });
           $currentColumn.toggleClass("highlight-right");
           $nextColumn.toggleClass("highlight-left");
+          markupGenerator.generateMarkup( $columnList );
         },
         progress: animateColumns,
       });

@@ -90,10 +90,16 @@ var markupGenerator = (function(){
       gutterEms = n/16;
     },
 
+    /** 
+      * @desc Create html and css markup for users to copy and paste
+      * @param $columnList is a jquery object of columns in the grid. 
+      * We use it to determine width and other properties of our grid columns.
+    */
     generateMarkup: function( $columnList ){
 
       var html = "",
-          css  = "";
+          css  = "",
+          classesArr = [];
 
       html += getEl({ 
                 indent: 0,
@@ -101,27 +107,22 @@ var markupGenerator = (function(){
                 classes: ["flex-container"],
               });
 
-      var cssObject = {
+      css += getCss( {
                         classname: "flex-container",
                         props: { 
                           "box-sizing": "border-box", 
                           "display": "flex",
                           "width": "100%"
                         }
-                      };
-      css += getCss( cssObject );
+                      } );
 
-      cssObject = {
+      css += getCss( {
                     classname: "flex-column",
                     props: { 
                       "box-sizing": "inherit", 
                       "padding": "0 " + gutterEms/2 + "em;",
                     }
-                  };
-
-      css += getCss( cssObject )
-
-      var classesArr = [];
+                  } )
 
       $columnList.each( function( i, el){
         // get the width of each column in grid units
@@ -133,14 +134,13 @@ var markupGenerator = (function(){
 
         if ( classesArr.indexOf(colClass) == -1 ) {
           classesArr.push(colClass);
-          cssObject = {
+
+          css += getCss( {
                         classname: "flex-column." + colClass,
                         props: { 
                           "flex": "0 0 " + w + "%", 
                         },
-                      };
-
-          css += getCss( cssObject );
+                      } );
         } 
         
         html += getEl({ 
@@ -153,9 +153,11 @@ var markupGenerator = (function(){
 
       html += getEndTag( "div" );
 
+      var $output = $( "#output" );
+
       if ( !$markup ){
-        $( "#output" ).append('<pre class="output-text"><code id="markup"></code></pre>');
-        $( "#output").append('<pre class="output-text"><code id="css"></code></pre>');
+        $output.append('<div class="output-text"><h2 class="settings-title">Your HTML</h2><pre><code id="markup"></code></pre></div>');
+        $output.append('<div class="output-text"><h2 class="settings-title">Your CSS</h2><pre><code id="css"></code></pre></div>');
         $markup = $( "#markup" );
         $css = $( "#css" );
       }
