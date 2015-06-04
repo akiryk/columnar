@@ -14,6 +14,7 @@
   border:1px solid $gridColor; 
   border-top: none;
   border-bottom: none;
+  -webkit-transform: translateX(-16px); 
   transform: translateX(-16px); 
 }
 

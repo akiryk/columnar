@@ -5,6 +5,7 @@
   background: transparent;
   height: 100%;
   width: 6px;
+  -webkit-transform: translateX(3px);
   transform: translateX(3px);
   z-index: 99;
 }
@@ -17,6 +18,7 @@
   border-radius: 3px;
   cursor: move;
   position: absolute;
+  -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   margin-left: 50%;
   top: 50%;
