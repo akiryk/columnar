@@ -33,13 +33,16 @@
   
   .output-text {
     color: #ccc;
-    -webkit-flex-grow: 1;
-    -webkit-flex-basis: 50%;
+      
+    -ms-flex: 1 0 0%;
+    -webkit-flex: 1 0 0%; 
     flex: 1 0 0%;
+        
     margin: 0 1em;
   }
   
   .flex-container {
+    -ms-flex-direction: row;
     -webkit-flex-direction: row;
     flex-direction: row;
   }

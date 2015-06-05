@@ -34,12 +34,18 @@
     }
   });
 
-  function generateMarkup(){
-    markupGenerator.generateMarkup( columnsLayout.getColumnList() )
+  $("input:radio", "#add-prefixes").on( "change", function(e){
+    var addPrefixes = $(this).val() == "yes" ? true : false;
+    generateMarkup( addPrefixes );
+  });
+
+  function generateMarkup( addPrefixes ){
+    var ap = addPrefixes !== undefined ? addPrefixes : false;
+    markupGenerator.generateMarkup( columnsLayout.getColumnList(), ap );
   }
 
   window.addEventListener( "resize", columnsLayout.onResize );
 
-  generateMarkup();
+  generateMarkup( false );
 
 })();

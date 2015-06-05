@@ -13,6 +13,7 @@ module.exports = function(grunt) {
         src: [
             'dev/js/libs/jquery.js', 
             'dev/js/libs/jquery-ui.js', 
+            'dev/js/libs/touch-punch.js', 
             'dev/js/columns.js',
             'dev/js/output.js',
             'dev/js/main.js',

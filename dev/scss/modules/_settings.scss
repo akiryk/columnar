@@ -12,13 +12,20 @@
 }
 
 .settings {
+  display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
+  
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
   flex-direction: column;
+  
   padding: 0;
 }
 
 .setting {
+  -ms-flex: 1 0 100%;
+  -webkit-flex: 1 0 100%;
   flex: 1 0 100%;
   margin-bottom: 2em;
 }
@@ -123,25 +130,33 @@ input::-moz-focus-inner {
   border: 0; 
 }
 
-@media screen and (min-width: $desktop){
+@media screen and (min-width: $tablet){
   .controls {
     padding: 2em 0;
     margin-bottom: 3em;
   }
   .settings {
+    -ms-flex-direction: row;
+    -webkit-flex-direction: row;
     flex-direction: row;
+      
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
     justify-content: center;
     padding: 0 1em;
   }
   .setting {
+    -ms-flex: 0 0 auto;
+    -webkit-flex: 0 0 auto;
     flex: 0 0 auto;
     margin-bottom: 0;
   }
-  .setting:first-of-type {
-    border-right: 1px solid rgba(255,255,255,0.1);  
-    padding-right: 2em;
-    margin-right: 2em;
+  .setting:nth-of-type(n+2) {
+    border-left: 1px solid rgba(255,255,255,0.1);  
+    padding-left: 2em;
+    margin-left: 2em;
   }
+
   .settings-title {
     text-align: left;
     margin-bottom: 0.5em;
@@ -150,4 +165,13 @@ input::-moz-focus-inner {
     width: 12em;
   }
 
+}
+
+.settings input[type="radio"] {
+  margin-right: .5em;
+}
+
+.settings label {
+  color: rgba(255,255,255,0.4);
+  margin-right: 1em;
 }
