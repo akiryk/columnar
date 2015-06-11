@@ -12807,6 +12807,7 @@ var markupGenerator = (function(){
 
   // private variables
   var gutterEms = 2,
+      addPrefixes,
       $markup,
       $css;
 
@@ -12912,12 +12913,16 @@ var markupGenerator = (function(){
       gutterEms = n/16;
     },
 
+    setPrefixing: function( bool ){
+      addPrefixes = bool;
+    },
+
     /** 
       * @desc Create html and css markup for users to copy and paste
       * @param $cellList is a jquery object of columns in the grid. 
       * We use it to determine width and other properties of our grid columns.
     */
-    generateMarkup: function( $cellList, addPrefixes ){
+    generateMarkup: function( $cellList ){
 
       var html = "",
           css  = "",
@@ -12967,9 +12972,9 @@ var markupGenerator = (function(){
           var properties = { "flex": "0 0 " + w + "%" };
           if ( addPrefixes ){
             properties = { 
-                          "-webkit-flex": "0 0 " + w + "%", 
-                          "-ms-flex": "0 0 " + w + "%",
-                          "flex": "0 0 " + w + "%", 
+                          "-webkit-flex":"0 0 " + w + "%", 
+                          "-ms-flex":"    0 0 " + w + "%",
+                          "flex":"        0 0 " + w + "%", 
                         }
           }
 
@@ -13045,16 +13050,16 @@ var markupGenerator = (function(){
 
   $("input:radio", "#add-prefixes").on( "change", function(e){
     var addPrefixes = $(this).val() == "yes" ? true : false;
-    generateMarkup( addPrefixes );
+    markupGenerator.setPrefixing( addPrefixes );
+    generateMarkup();
   });
 
-  function generateMarkup( addPrefixes ){
-    var ap = addPrefixes !== undefined ? addPrefixes : false;
-    markupGenerator.generateMarkup( columnsLayout.getColumnList(), ap );
+  function generateMarkup( ){
+    markupGenerator.generateMarkup( columnsLayout.getColumnList() );
   }
 
   window.addEventListener( "resize", columnsLayout.onResize );
 
-  generateMarkup( false );
+  generateMarkup();
 
 })();
