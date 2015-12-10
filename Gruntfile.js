@@ -29,6 +29,32 @@ module.exports = function(grunt) {
         }
       }
     },
+    responsive_images: {
+      resize: {
+        options: {
+          engine: 'gm', // default -- alt is 'im'
+          quality: 60,
+          sizes: [{
+            suffix: '_small_1x', // this will result in filename-320_small_1x.jpg
+            width: 320
+          },{
+            suffix: '_medium_1x', // this will result in filename-320_small_1x.jpg
+            width: 640
+          },{
+            suffix: '_large_1x', // this will result in filename-320_small_1x.jpg
+            width: 1023
+          },{
+            name: 'original', rename: false, width: '100%'
+          }]
+        },
+        files: [{
+          expand: true,
+          src: ['images/**.{jpg,gif,png}'],
+          cwd: 'dev/', // start images should be in dev/images
+          dest: 'prod/' // end images should be in prod/images
+        }]
+      }
+    },
     uglify: {
       build: {
         src: 'prod/js/production.js',
@@ -53,14 +79,34 @@ module.exports = function(grunt) {
         }
       }
     },
+    postcss: {
+      options: {
+        map: true // inline sourcemaps
+      },
+      dist: {
+        src: '*.css'
+      }
+    },
+    jshint: {
+      files: ['Gruntfile.js','dev/js/*.js'], // array of files to lint
+    },
+    inline: {
+      dist: {
+        options:{
+          cssmin: true,
+          uglify: true
+        },
+        src: 'index.html',
+        dest: 'prod/index.html'
+      }
+    },
     watch: {
       scripts: {
-        files: [ 
+        files: [
                 'dev/js/libs/*.js',
-                'dev/js/plugins/*.js',
                 'dev/js/*.js',
                 ],
-        tasks: ['concat'],
+        tasks: ['jshint'],
         options: {
             spawn: false,
             livereload: true
@@ -122,21 +168,18 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-processhtml');
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-responsive-images');
+  grunt.loadNpmTasks('grunt-inline');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
 
-  // Default task(s).
-  grunt.registerTask('default', [ 
-    'connect', 
-    'sass', 
+ // Default task(s).
+  grunt.registerTask('default', [
+    'connect',
+    'sass',
     'watch'
     ]);
-  grunt.registerTask('compile-sass', [
-    'sass',
-    ]);
-  grunt.registerTask('build', [
-    'connect', 
-    'sass', 
-    'watchForProduction',
-    'processhtml',
-    'uglify'
+
+  grunt.registerTask('resize', [
+    'responsive_images',
     ]);
 };

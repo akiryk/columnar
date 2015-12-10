@@ -618,7 +618,7 @@ pre {
 }
 
 input[type=range] {
-  background: #1a2022;
+  background: #1A2022;
   border-radius: 5px;
   box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
   cursor: ew-resize;
@@ -660,7 +660,7 @@ input[type=range]::-moz-range-thumb {
 }
 
 ::-moz-range-track {
-  background: #1a2022;
+  background: #1A2022;
   border: 0;
 }
 
@@ -871,3 +871,5 @@ code {
 .inner-span {
   visibility: hidden;
 }
+
+/*# sourceMappingURL=style.css.map */
