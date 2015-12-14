@@ -18,11 +18,16 @@ module.exports = function(grunt) {
             'dev/js/libs/jquery.js', 
             'dev/js/libs/jquery-ui.js', 
             'dev/js/libs/touch-punch.js', 
-            'dev/js/columns.js',
-            'dev/js/output.js',
-            'dev/js/main.js',
+            'dev/js/gridModel.js',
+            'dev/js/mainController.js',
+            'dev/js/dragController.js',
+            'dev/js/outputController.js',
+            'dev/js/outputView.js',
+            'dev/js/gridView.js',
+            'dev/js/settingsView.js',
+            'dev/js/main.js'
         ],
-        dest: 'prod/js/unminified.js',
+        dest: 'dev/js/unminified.js',
       }
     },
 
@@ -61,30 +66,35 @@ module.exports = function(grunt) {
         }]
       }
     },
+
     uglify: {
       build: {
-        src: 'prod/js/production.js',
-        dest: 'prod/js/production.min.js'
+        src: 'dev/js/unminified.js',
+        dest: 'prod/js/app.min.js'
       }
     },
+
     processhtml: {
       dev: {
         files: {
-          'index.html': ['index.html'] // 'destination.html': ['source.html']
+          'prod/index.html': ['index.html'] // 'destination.html': ['source.html']
         }
       },
     },
+
     sass: {                              // Task
       dist: {                            // Target
         options: {                       // Target options
-          style: 'expanded'
+          style: 'compressed' // nested, compact, compressed, expanded
         },
         files: {                         // Dictionary of files
           'dev/css/style.css': 'dev/scss/style.scss',   
+          'prod/css/style.min.css': 'dev/scss/style.scss',   
            // 'destination': 'source'
         }
       }
     },
+
     postcss: {
       options: {
         map: true // inline sourcemaps
@@ -93,6 +103,7 @@ module.exports = function(grunt) {
         src: '*.css'
       }
     },
+
     inline: {
       dist: {
         options:{
@@ -109,7 +120,7 @@ module.exports = function(grunt) {
                 'dev/js/libs/*.js',
                 'dev/js/*.js',
                 ],
-        //tasks: ['jshint'],
+        tasks: ['concat'],
         options: {
             spawn: false,
             livereload: true
@@ -183,7 +194,14 @@ module.exports = function(grunt) {
     ]);
 
   grunt.registerTask('lint', [
-    'jshint',
+    'jshint'
+    ]);
+
+  grunt.registerTask('build', [
+    'concat',
+    'uglify',
+    'sass',
+    'processhtml'
     ]);
 
   grunt.registerTask('resize', [
