@@ -5,49 +5,18 @@
 }
 
 .columns {
-   /* Internet Explorer 10
-   */
-  display: -ms-flexbox;
-  -ms-flex-wrap: none;
-  -ms-flex-pack: start;
-  -ms-flex-direction: row;
-  
-  /* Chrome 21-28
-   * Safari 6.1+
-   * Opera 15-16
-   * iOS 7.0+
-   */
-  display: -webkit-flex;
-  -webkit-flex-wrap: nowrap;
-  -webkit-justify-content: flex-start;
-  -webkit-flex-direction: row;
- 
-  /* Chrome 29+
-   * Firefox 28+
-   * Internet Explorer 11+
-   * Opera 12.1 & 17+
-   * Android 4.4+
-   */
   display: flex;
   justify-content: flex-start;
   flex-wrap: nowrap;
   flex-direction: row;
-  
   height: 16em;
   
 }
 
 .column {
-  -ms-flex-align: stretch; // default value, but just being explicit
-  -webkit-align-items: stretch;
   align-items: stretch;      
-      
-  -ms-flex: 0 1 auto;
-  -webkit-flex: 0 1 auto;    
-  
   display: inherit; // flex
   flex: 0 1 auto;
-  
   position: relative;
 }
 

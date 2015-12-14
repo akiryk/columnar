@@ -8,6 +8,10 @@ module.exports = function(grunt) {
 
     pkg: grunt.file.readJSON('package.json'),
 
+    jshint: {
+      files: ['Gruntfile.js','dev/js/*.js'], // array of files to lint
+    },
+
     concat: {   
       dist: {
         src: [
@@ -21,6 +25,7 @@ module.exports = function(grunt) {
         dest: 'prod/js/unminified.js',
       }
     },
+
     connect: {
       server: {
         options: {
@@ -29,6 +34,7 @@ module.exports = function(grunt) {
         }
       }
     },
+
     responsive_images: {
       resize: {
         options: {
@@ -87,9 +93,6 @@ module.exports = function(grunt) {
         src: '*.css'
       }
     },
-    jshint: {
-      files: ['Gruntfile.js','dev/js/*.js'], // array of files to lint
-    },
     inline: {
       dist: {
         options:{
@@ -106,7 +109,7 @@ module.exports = function(grunt) {
                 'dev/js/libs/*.js',
                 'dev/js/*.js',
                 ],
-        tasks: ['jshint'],
+        //tasks: ['jshint'],
         options: {
             spawn: false,
             livereload: true
@@ -177,6 +180,10 @@ module.exports = function(grunt) {
     'connect',
     'sass',
     'watch'
+    ]);
+
+  grunt.registerTask('lint', [
+    'jshint',
     ]);
 
   grunt.registerTask('resize', [

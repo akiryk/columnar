@@ -40,15 +40,15 @@ var columnsLayout = (function(){
   };
 
   var createGuideGrid = function(){
-    var $gridWrapper = $('<div class="grid" id="grid">');
-    for (var i=0; i<gridColumns+1; i++){
-      $gridWrapper.append("<div class='line'></div>\n");
-    }
-    $columns.before( $gridWrapper );
-    $( ".line" ).each( function(i, el){
-      var p = i/12 * totalWidth;
-      $( this ).css( "left", p + "px" );
-    });
+    // var $gridWrapper = $('<div class="grid" id="grid">');
+    // for (var i=0; i<gridColumns+1; i++){
+    //   $gridWrapper.append("<div class='line'></div>\n");
+    // }
+    // $columns.before( $gridWrapper );
+    // $( ".line" ).each( function(i, el){
+    //   var p = i/12 * totalWidth;
+    //   $( this ).css( "left", p + "px" );
+    // });
   };
 
   var renderColumns = function(){
@@ -283,4 +283,4 @@ var columnsLayout = (function(){
 
 })();
 
-columnsLayout.init();
+//columnsLayout.init();
