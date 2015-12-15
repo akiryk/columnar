@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: gridView.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: gridView.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>
+  /** Grid View
+   * The display of columns with drag handles
+   */
+  var GridView = (function(){
+    'use strict';
+
+    var $columns = $( "#columns");
+    
+    return {
+    
+      // e.g. a three column grid or a five column grid
+      numColumns: Controller.getNumColumns(),
+
+      // Number of divisions in background grid, e.g. 9 or 12 or 16.
+      gridDivisions: Controller.getGridDivisions(),
+
+      /** 
+       * Initialize the Grid View
+       */
+      init: function(){
+        this.createGuideGrid();
+        this.renderColumns();
+        this.setColumnWidths();
+      },
+
+      /**
+       * Create interactive columns
+       * Adds a '.column' element to the DOM, including the dragger class
+       * which will be used by the dragger-ui plugin.
+       */
+      renderColumns: function(){
+        var markup = '',
+            dragger = "&lt;div class='dragger'>&lt;div class='handle'>&lt;/div>&lt;/div>";
+
+        for (var i=0; i&lt;this.numColumns-1; i++){
+          markup += "&lt;div class='column'>" + dragger + "&lt;div class='inner'>&lt;/div>&lt;/div>";
+        }
+
+        markup += "&lt;div class='column last'>&lt;div class='inner'>&lt;/div>&lt;/div>";
+
+        $columns.html( markup );
+
+        this.styleInnerContent();      
+      },
+
+      styleInnerContent: function(){
+        var px = (Controller.getGutterWidth() / 2) - 1 + "px";
+        $( ".inner" ).css({
+          "margin-left": px, 
+          "margin-right": px 
+        });
+      },
+
+      updateNumColumns: function(n){
+        this.numColumns = n;
+        this.renderColumns();
+        this.setColumnWidths();
+      },
+
+      updateGutterWidth: function(w){
+        this.renderGutter();
+        this.styleInnerContent();
+      },
+
+      /**
+       * Set width of each column element in DOM
+       */
+      setColumnWidths: function(){
+        var $columnList = $( ".column", $columns );
+        var cols = 12/this.numColumns;
+        var cw = 1 / $columnList.length * 100 + "%";
+        var numColumns = this.numColumns;
+
+        if (numColumns == 5){
+          cw = 1/6 * 100 + "%";
+          cols = 2;
+        }
+
+        // Set column widths
+        $columnList.each( function(i, el){
+          var $this = $( this ),
+              width = cw;
+          if (numColumns == 5 &amp;&amp; i == 4 ){
+            width = 1/3 * 100 + "%";
+          }
+
+          $( this )
+            .css( "flex-basis", width )
+            .data({
+              "startCol": cols * (i+1)
+              });
+        });
+      },
+
+      renderGutter: function(){
+
+        var gutterPx = Controller.getGutterWidth();
+
+        $( ".line", "#grid" ).css({
+          "width": gutterPx + "px",
+          "transform": "translateX(-" + gutterPx/2 + "px)"
+        });
+
+      },
+
+      /**
+       * Create vertical guidelines for the grid.
+       * The guidelines are rendered by drawing left and right borders on boxes 
+       * for which width = Model.gutterWidth. The left-most and right-most
+       * boxes only have one border.
+       */
+      createGuideGrid: function(){
+        
+        // A container element we'll append to DOM.
+        var $gridWrapper = $('&lt;div class="grid" id="grid">');
+
+        // Total width of the grid based on screen width.
+        var totalWidth = Controller.getTotalWidth();
+
+        var gd = this.gridDivisions;
+
+        // Append line elements to grid that is still not part of DOM
+        for (var i=0; i&lt;gd+1; i++){
+          $gridWrapper.append("&lt;div class='line'>&lt;/div>\n");
+        }
+
+        // Now attach the full set of guidelines to the DOM
+        $columns.before( $gridWrapper );
+
+        $( ".line" ).each( function(i, el){
+          var p = i/gd * totalWidth;
+          $( this ).css( "left", p + "px" );
+        });
+      }
+
+    };
+
+  })();</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#$currentColumn">$currentColumn</a></li><li><a href="global.html#animateColumns">animateColumns</a></li><li><a href="global.html#Controller">Controller</a></li><li><a href="global.html#createGuideGrid">createGuideGrid</a></li><li><a href="global.html#DragController">DragController</a></li><li><a href="global.html#findClosestGridLine">findClosestGridLine</a></li><li><a href="global.html#getDraggerContainment">getDraggerContainment</a></li><li><a href="global.html#getPrevCols">getPrevCols</a></li><li><a href="global.html#GridView">GridView</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initDraggers">initDraggers</a></li><li><a href="global.html#initEvents">initEvents</a></li><li><a href="global.html#killDraggers">killDraggers</a></li><li><a href="global.html#Model">Model</a></li><li><a href="global.html#onDragMove">onDragMove</a></li><li><a href="global.html#onDragStart">onDragStart</a></li><li><a href="global.html#onDragStop">onDragStop</a></li><li><a href="global.html#onResize">onResize</a></li><li><a href="global.html#OutputController">OutputController</a></li><li><a href="global.html#OutputView">OutputView</a></li><li><a href="global.html#renderColumns">renderColumns</a></li><li><a href="global.html#renderMarkup">renderMarkup</a></li><li><a href="global.html#setColumnWidths">setColumnWidths</a></li><li><a href="global.html#setContainment">setContainment</a></li><li><a href="global.html#SettingsView">SettingsView</a></li><li><a href="global.html#updateActiveColumns">updateActiveColumns</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon Dec 14 2015 21:08:51 GMT-0500 (EST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

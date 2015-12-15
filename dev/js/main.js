@@ -1,7 +1,8 @@
 (function(){
+  
   Controller.init();
 
-//window.addEventListener( "resize", columnsLayout.onResize );
+	window.addEventListener( "resize", Controller.onResize );
 
 })();
 

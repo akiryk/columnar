@@ -156,6 +156,7 @@ module.exports = function(grunt) {
             livereload: true
         },
       },
+
       css: {
         files: ['dev/scss/**/*.scss',
                 'dev/scss/*.scss',
@@ -166,12 +167,23 @@ module.exports = function(grunt) {
           livereload: true
         }
       },
+
       html: {
         files: ['index.html'],
         options: {
             livereload: false
         }
+      },
+
+      jsdoc: {
+        dist : {
+            src: ['dev/js/unminified.js', 'README.md'],
+            options: {
+                destination: 'out'
+            }
+        }
       }
+
     }
   });
   
@@ -185,6 +197,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-responsive-images');
   grunt.loadNpmTasks('grunt-inline');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-jsdoc');
 
  // Default task(s).
   grunt.registerTask('default', [
@@ -195,6 +208,10 @@ module.exports = function(grunt) {
 
   grunt.registerTask('lint', [
     'jshint'
+    ]);
+
+  grunt.registerTask('doc', [
+    'jsdoc'
     ]);
 
   grunt.registerTask('build', [

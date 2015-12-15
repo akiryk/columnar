@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: outputController.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: outputController.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>  /**
+   * Output Controller
+   * Display HTML and CSS markup to achieve the grid that a 
+   * user creates by dragging the columns.
+   */
+  var OutputController = (function(){
+    'use strict';
+    
+    // Private vars
+    var gutterEms = 2;
+
+    var $columns = $( "#columns");
+
+    // Private helper functions for creating the markup
+    var getStartTagOpen = function( tagname, indents ){
+      var indents = indents || 0,
+          spaces = "";
+      for (var i=0; i&lt;indents; i++){
+        spaces += " ";
+      }
+      return  spaces + "&amp;lt;&lt;span class='tagname'>" + tagname + "&lt;/span>";
+    };
+
+    var getStartTagClose = function(){
+      return "&lt;/span>&amp;gt;";
+    };
+
+    /*
+     * return a &lt;span> fragment with a class, 
+     * e.g. &lt;span class='someclass'>
+     */
+    var getSpanClass = function( classname){
+      return "&lt;span class=" + classname + ">";
+    };
+
+    var getAttr = function( attr ){
+      return getSpanClass("attrname") + attr + "&lt;/span>";
+    };
+
+    var getEndTag = function( tagname ){
+        return "&amp;lt;&lt;span class='tagname'>/" + tagname + "&lt;/span>&amp;gt;";
+    };
+
+    var getCss = function( options ){
+      var defaults = {
+        classname: "some-class",
+        props: {}
+      };
+      var settings = $.extend({}, defaults, options);
+      var css = getClassName( settings.classname ) + " {\n";
+      var value;
+
+      for (var prop in settings.props){
+        value = settings.props[prop];
+        if ( Array.isArray( value )){
+          css += getRulesFromArrayOfValues( prop, value );
+        } else {
+          css += "  " + getSpanClass("propname") + prop + "&lt;/span>: " + getSpanClass("valuename") + value + "&lt;/span>;\n";
+        }
+      }
+
+      css += "}\n\n";
+      return css;
+    };
+
+    var getEl = function( options ){
+      var defaults = {
+        indent: 0, // number of spaces
+        tag: "div",
+        classes: [],
+        innerText: ""
+      };
+      var settings = $.extend({}, defaults, options);
+      var txt = getStartTagOpen( settings.tag, settings.indent );
+      if (settings.classes.length){
+        txt += " " + getAttr("class") + "='" + getSpanClass("classname") + settings.classes.join(" ") + "'"; 
+      }
+      txt += getStartTagClose(); // >
+
+      if (settings.innerText){
+        txt += "\n" + "    " + settings.innerText + "\n" + "  " + getEndTag( "div" );
+      }
+      return txt + "\n";
+    };
+
+    /*
+     * return a css class wrapped in a span, 
+     * e.g. &lt;span class='classname'>.some-class&lt;/span>
+     */
+    var getClassName = function ( classname ){
+      return "&lt;span class='classname'>" + "." + classname + "&lt;/span>";
+    };
+
+    /*
+     * Return a string containing a property name and value
+     */
+    var getRulesFromArrayOfValues = function( propertyName, values ){
+      var css = "";
+      for (var i=0; i&lt;values.length; i++){
+        css += "  " + getSpanClass("propname") + propertyName + "&lt;/span>: " + getSpanClass("valuename") + values[i] + "&lt;/span>;\n";
+      }
+      return css;
+    };
+
+    var changePaddingWidth = function( n ){
+      gutterEms = n/16;
+    };
+
+    var getColumnList = function(){
+      return $( ".column", $columns );
+    };
+
+    var addPrefixes = Controller.getPrefixSetting();
+
+    // public methods
+    return {
+
+      $columnList: null,
+
+      init: function(){
+        this.$columnList = $( ".column", $columns );
+        this.renderMarkup();
+      },
+
+      setPrefixing: function( bool ){
+        addPrefixes = bool;
+        this.renderMarkup();
+      },
+
+      updateGutterWidth: function(w){
+        changePaddingWidth(w);
+        this.renderMarkup();
+      },
+
+      updateNumColumns: function(n){
+        this.$columnList = getColumnList();
+        this.renderMarkup();
+      },
+
+      updateColumnWidths: function(){
+        this.$columnList = getColumnList();
+        this.renderMarkup();
+      },
+
+      /** 
+        * @desc Create html and css markup for users to copy and paste
+        * @param $cellList is a jquery object of columns in the grid. 
+        * We use it to determine width and other properties of our grid columns.
+      */
+      renderMarkup: function(){
+        var html = "",
+            css  = "",
+            displayArr = [ "flex" ];
+
+        var $columnList = this.$columnList;
+
+        // create &lt;div class="flex-container">
+        html += getEl({ 
+                  indent: 0,
+                  tag: "div", 
+                  classes: ["flex-container"],
+                });
+
+        // create .flex-container { ... }
+        if ( addPrefixes ){
+          displayArr.unshift(  "-webkit-flex", "-ms-flex" );
+        }
+    
+        css += getCss( {  classname: "flex-container",
+                      props: { 
+                        "box-sizing": "border-box", 
+                        "display": displayArr,
+                        "width": "100%"
+                      }
+                    } );
+
+        // create .flex-cell { ... }
+        css += getCss( {
+                      classname: "flex-cell",
+                      props: { 
+                        "box-sizing": "inherit", 
+                        "padding": "0 " + gutterEms/2 + "em;",
+                      }
+                    } );
+
+        var classesArr = [];
+
+        // Create html and css based on number of cells and their parameters
+        $columnList.each( function( i, el){
+          // get the width of each column in grid units (e.g. a 2 column )
+          var columnStart = i > 0 ? $( this ).prev().data("startCol") : 0,
+              columnEnd = $( this ).data("startCol"),
+              numColumns = Math.abs(columnEnd - columnStart),
+              w = (numColumns/12 * 100 ),
+              colClass = "cols-" + numColumns;
+
+          if ( classesArr.indexOf(colClass) == -1 ) {
+            classesArr.push(colClass);
+            var properties = { "flex": "0 0 " + w + "%" };
+            if ( addPrefixes ){
+              properties = { 
+                            "-webkit-flex":"0 0 " + w + "%", 
+                            "-ms-flex":"    0 0 " + w + "%",
+                            "flex":"        0 0 " + w + "%", 
+                          };
+            }
+
+            css += getCss( {
+                          classname: "flex-cell." + colClass,
+                          props: properties,
+                        } );
+          } 
+          
+          html += getEl({ 
+                    indent: 2, 
+                    tag: "div", 
+                    classes: ["flex-cell", colClass],
+                    innerText: "some content"
+                  });
+        });
+
+        html += getEndTag( "div" );
+
+        OutputView.render(html, css);
+
+      },
+
+    };
+
+  })();</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#$currentColumn">$currentColumn</a></li><li><a href="global.html#animateColumns">animateColumns</a></li><li><a href="global.html#Controller">Controller</a></li><li><a href="global.html#createGuideGrid">createGuideGrid</a></li><li><a href="global.html#DragController">DragController</a></li><li><a href="global.html#findClosestGridLine">findClosestGridLine</a></li><li><a href="global.html#getDraggerContainment">getDraggerContainment</a></li><li><a href="global.html#getPrevCols">getPrevCols</a></li><li><a href="global.html#GridView">GridView</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initDraggers">initDraggers</a></li><li><a href="global.html#initEvents">initEvents</a></li><li><a href="global.html#killDraggers">killDraggers</a></li><li><a href="global.html#Model">Model</a></li><li><a href="global.html#onDragMove">onDragMove</a></li><li><a href="global.html#onDragStart">onDragStart</a></li><li><a href="global.html#onDragStop">onDragStop</a></li><li><a href="global.html#onResize">onResize</a></li><li><a href="global.html#OutputController">OutputController</a></li><li><a href="global.html#OutputView">OutputView</a></li><li><a href="global.html#renderColumns">renderColumns</a></li><li><a href="global.html#renderMarkup">renderMarkup</a></li><li><a href="global.html#setColumnWidths">setColumnWidths</a></li><li><a href="global.html#setContainment">setContainment</a></li><li><a href="global.html#SettingsView">SettingsView</a></li><li><a href="global.html#updateActiveColumns">updateActiveColumns</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon Dec 14 2015 21:08:51 GMT-0500 (EST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
